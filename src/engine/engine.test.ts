@@ -113,8 +113,10 @@ describe('AudioEngine (offline render)', () => {
     engine.setActive('A'); // first switch at t = 0
     await engine.play();
     const offline = ctx as unknown as Offline;
+    let switchAt = NaN;
     void offline.suspend(1.2).then(() => {
-      engine.setActive('B'); // second switch 1.2 s later
+      switchAt = ctx.currentTime; // quantised to the render block
+      engine.setActive('B'); // second switch ~1.2 s later
       void offline.resumeRendering();
     });
     const out = await render(ctx);
@@ -129,10 +131,10 @@ describe('AudioEngine (offline render)', () => {
       return num / den;
     };
     expect(gainAt(1.0)).toBeCloseTo(1, 2);
-    const mid = gainAt(1.2 + 0.004); // halfway through the 8 ms crossfade
-    expect(mid).toBeGreaterThan(0.3);
-    expect(mid).toBeLessThan(0.7);
-    expect(gainAt(1.3)).toBeCloseTo(0, 2);
+    const mid = gainAt(switchAt + 0.004); // halfway through the 8 ms crossfade
+    expect(mid).toBeGreaterThan(0.35);
+    expect(mid).toBeLessThan(0.65);
+    expect(gainAt(switchAt + 0.1)).toBeCloseTo(0, 2);
   });
 
   it.skipIf(onLinux)('re-schedules seamlessly when the loop changes during playback', async () => {
