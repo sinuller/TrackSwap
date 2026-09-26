@@ -95,8 +95,8 @@
 
   .src {
     --c: var(--text);
-    --c-soft: rgba(255, 255, 255, 0.06);
-    --c-glow: rgba(255, 255, 255, 0.2);
+    --c-soft: var(--glass);
+    --c-glow: var(--glass-strong);
     position: relative;
     display: flex;
     flex-direction: column;
@@ -126,7 +126,7 @@
   .src.x:not(.a):not(.b) {
     --c: var(--x);
     --c-soft: var(--x-soft);
-    --c-glow: rgba(180, 140, 255, 0.35);
+    --c-glow: var(--x-glow);
   }
   .src:hover:not(:disabled) {
     color: var(--c);
@@ -178,10 +178,10 @@
     background: var(--text);
     color: var(--bg);
     transition: transform 0.08s, background 0.15s;
-    box-shadow: 0 6px 24px -8px rgba(255, 255, 255, 0.35);
+    box-shadow: 0 6px 24px -8px var(--primary-glow);
   }
   .play:hover:not(:disabled) {
-    background: #fff;
+    background: var(--primary-hover);
   }
   .play:active:not(:disabled) {
     transform: scale(0.94);

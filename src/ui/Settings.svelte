@@ -1,8 +1,15 @@
 <script lang="ts">
   import { app } from '../lib/app.svelte';
   import { fmtRate, fmtSigned } from '../lib/format';
-  import { i18n, t, type LangSetting } from '../lib/i18n.svelte';
+  import { i18n, t, type LangSetting, type MessageKey } from '../lib/i18n.svelte';
+  import { theme, type ThemeSetting } from '../lib/theme.svelte';
   import Icon from './Icon.svelte';
+
+  const THEMES: { id: ThemeSetting; icon: 'contrast' | 'sun' | 'moon'; label: MessageKey }[] = [
+    { id: 'auto', icon: 'contrast', label: 'themeAuto' },
+    { id: 'light', icon: 'sun', label: 'themeLight' },
+    { id: 'dark', icon: 'moon', label: 'themeDark' },
+  ];
 
   const MAX_OFFSET_MS = 10_000;
   const LANGS: { id: LangSetting; label: string }[] = [
@@ -48,6 +55,23 @@
             {l.id === 'auto' ? t('languageAuto') : l.label}
           </button>
         {/each}
+      </div>
+      <div class="appearance">
+        <span>{t('appearance')}</span>
+        <div class="mini" role="radiogroup" aria-label={t('appearance')}>
+          {#each THEMES as th (th.id)}
+            <button
+              role="radio"
+              aria-checked={theme.setting === th.id}
+              aria-label={t(th.label)}
+              title={t(th.label)}
+              class:on={theme.setting === th.id}
+              onclick={() => theme.set(th.id)}
+            >
+              <Icon name={th.icon} size={15} />
+            </button>
+          {/each}
+        </div>
       </div>
     </section>
 
@@ -152,6 +176,35 @@
     background: var(--panel-3);
     color: var(--text);
   }
+  .appearance {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .mini {
+    display: inline-flex;
+    padding: 2px;
+    border-radius: 8px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+  }
+  .mini button {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 26px;
+    border-radius: 6px;
+    color: var(--muted);
+  }
+  .mini button:hover {
+    color: var(--text);
+  }
+  .mini button.on {
+    background: var(--panel-3);
+    color: var(--text);
+  }
   .rate {
     margin-left: auto;
     font-size: 11px;
@@ -160,7 +213,7 @@
   .backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--backdrop);
     z-index: 40;
     animation: fade 0.15s;
   }

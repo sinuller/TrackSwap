@@ -205,7 +205,7 @@
     height: 38px;
     border-radius: 10px;
     background: var(--c);
-    color: #0b0d10;
+    color: var(--on-accent);
     font-weight: 800;
     font-size: 20px;
   }
@@ -298,11 +298,11 @@
     color: var(--c);
   }
   .badge.good {
-    background: rgba(74, 222, 128, 0.12);
+    background: var(--good-soft);
     color: var(--good);
   }
   .badge.lossy {
-    background: rgba(251, 191, 36, 0.12);
+    background: var(--warn-soft);
     color: var(--warn);
   }
   .badge.comp {
@@ -390,14 +390,14 @@
     margin-top: 2px;
   }
   .notice.warn {
-    background: rgba(251, 191, 36, 0.08);
+    background: var(--warn-soft);
     color: var(--text);
   }
   .notice.warn :global(svg) {
     color: var(--warn);
   }
   .notice.bad {
-    background: rgba(248, 113, 113, 0.08);
+    background: var(--bad-soft);
   }
   .notice.bad :global(svg) {
     color: var(--bad);

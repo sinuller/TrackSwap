@@ -13,10 +13,10 @@
 <header class="header">
   <div class="brand">
     <svg class="logo" viewBox="0 0 32 32" aria-hidden="true">
-      <rect x="1" y="1" width="30" height="30" rx="8" fill="#14171c" stroke="#262c36" />
-      <rect x="7" y="9" width="4" height="14" rx="2" fill="#ffb020" />
-      <rect x="14" y="5" width="4" height="22" rx="2" fill="#e8ebf1" />
-      <rect x="21" y="11" width="4" height="10" rx="2" fill="#38c8f4" />
+      <rect x="1" y="1" width="30" height="30" rx="8" fill="var(--panel)" stroke="var(--line)" />
+      <rect x="7" y="9" width="4" height="14" rx="2" fill="var(--a)" />
+      <rect x="14" y="5" width="4" height="22" rx="2" fill="var(--text)" />
+      <rect x="21" y="11" width="4" height="10" rx="2" fill="var(--b)" />
     </svg>
     <span class="name">Track<span>Swap</span></span>
   </div>
@@ -87,7 +87,7 @@
   .modes button.on {
     background: var(--panel-3);
     color: var(--text);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+    box-shadow: 0 1px 0 var(--highlight) inset;
   }
   .short {
     display: none;

@@ -63,7 +63,7 @@
     display: grid;
     place-items: center;
     padding: 16px;
-    background: rgba(0, 0, 0, 0.55);
+    background: var(--backdrop);
   }
   .dialog:focus {
     outline: none;

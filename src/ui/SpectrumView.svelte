@@ -4,8 +4,8 @@
   import { SLOTS, type Slot } from '../engine/AudioEngine';
   import { fitCanvas, onFrame } from '../lib/ticker';
   import { t } from '../lib/i18n.svelte';
+  import { canvasPalette } from '../lib/theme.svelte';
 
-  const COLORS: Record<Slot, [number, number, number]> = { A: [255, 176, 32], B: [56, 200, 244] };
   const DB_MIN = -120;
   const DB_MAX = 0;
   const F_MIN = 20;
@@ -38,7 +38,8 @@
       const fx = (f: number) => padL + ((Math.log10(Math.max(F_MIN, f)) - lf0) / (lf1 - lf0)) * plotW;
       const dy = (db: number) => top + ((DB_MAX - Math.max(DB_MIN, Math.min(DB_MAX, db))) / (DB_MAX - DB_MIN)) * plotH;
 
-      g.fillStyle = '#0f1216';
+      const p = canvasPalette();
+      g.fillStyle = p.bg;
       g.fillRect(0, 0, W, H);
 
       // Grid
@@ -47,9 +48,9 @@
       g.textAlign = 'right';
       for (let db = DB_MIN; db <= DB_MAX; db += 20) {
         const y = Math.round(dy(db));
-        g.fillStyle = '#1a1e25';
+        g.fillStyle = p.grid;
         g.fillRect(padL, y, plotW, Math.max(1, dpr * 0.75));
-        g.fillStyle = '#5a6373';
+        g.fillStyle = p.faint;
         g.fillText(`${db}`, padL - 6 * dpr, y);
       }
       g.textAlign = 'center';
@@ -57,9 +58,9 @@
       for (const f of [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 40000, 80000]) {
         if (f > fMax) break;
         const x = Math.round(fx(f));
-        g.fillStyle = f === 1000 || f === 10000 || f === 100 ? '#232833' : '#181c23';
+        g.fillStyle = f === 1000 || f === 10000 || f === 100 ? p.gridStrong : p.grid;
         g.fillRect(x, top, Math.max(1, dpr * 0.75), plotH);
-        g.fillStyle = '#5a6373';
+        g.fillStyle = p.faint;
         g.fillText(f >= 1000 ? `${f / 1000}k` : `${f}`, x, top + plotH + 4 * dpr);
       }
 
@@ -68,7 +69,7 @@
       visible.sort((a) => (a === app.active ? 1 : -1));
 
       for (const slot of visible) {
-        const [r, gC, b] = COLORS[slot];
+        const [r, gC, b] = slot === 'A' ? p.aRgb : p.bRgb;
         const isActive = slot === app.active;
         let data: Float32Array;
         let binHz: number;
@@ -137,7 +138,7 @@
       }
 
       if (app.hidesIdentity) {
-        g.fillStyle = '#5a6373';
+        g.fillStyle = p.faint;
         g.font = `${13 * dpr}px system-ui, sans-serif`;
         g.textAlign = 'center';
         g.textBaseline = 'middle';

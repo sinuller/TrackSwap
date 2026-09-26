@@ -291,7 +291,7 @@
   }
   .anon-card.on {
     border-color: var(--x);
-    box-shadow: 0 0 0 1px var(--x), 0 0 28px -6px rgba(180, 140, 255, 0.35);
+    box-shadow: 0 0 0 1px var(--x), 0 0 28px -6px var(--x-glow);
   }
   .anon-card .q {
     display: grid;
@@ -424,7 +424,7 @@
     z-index: 70;
     display: grid;
     place-items: center;
-    background: rgba(11, 13, 16, 0.8);
+    background: var(--overlay);
     backdrop-filter: blur(4px);
     pointer-events: none;
   }
@@ -495,7 +495,7 @@
       bottom: 0;
       z-index: 30;
       padding: 10px 12px calc(10px + var(--safe-bottom));
-      background: rgba(15, 18, 22, 0.92);
+      background: var(--bar-bg);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-top: 1px solid var(--line);

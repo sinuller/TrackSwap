@@ -45,7 +45,7 @@
     border-radius: 10px;
     background: var(--panel-3);
     border: 1px solid var(--line-2);
-    box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 12px 32px -12px var(--shadow);
     font-size: 13px;
     animation: up 0.18s ease-out;
   }

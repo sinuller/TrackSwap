@@ -1,7 +1,8 @@
 <script lang="ts">
   type Name =
     | 'play' | 'pause' | 'loop' | 'settings' | 'help' | 'close' | 'upload' | 'volume' | 'volume-off'
-    | 'airplay' | 'align' | 'swap' | 'eye' | 'eye-off' | 'music' | 'warn' | 'check' | 'info' | 'bracket-l' | 'bracket-r' | 'refresh';
+    | 'airplay' | 'align' | 'swap' | 'eye' | 'eye-off' | 'music' | 'warn' | 'check' | 'info' | 'bracket-l' | 'bracket-r' | 'refresh'
+    | 'sun' | 'moon' | 'contrast';
 
   let { name, size = 18 }: { name: Name; size?: number } = $props();
 </script>
@@ -48,6 +49,12 @@
     <path d="M9 4H5v16h4" /><path d="M13 12h6" />
   {:else if name === 'bracket-r'}
     <path d="M15 4h4v16h-4" /><path d="M5 12h6" />
+  {:else if name === 'sun'}
+    <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+  {:else if name === 'moon'}
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+  {:else if name === 'contrast'}
+    <circle cx="12" cy="12" r="9" /><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" />
   {:else if name === 'refresh'}
     <path d="M23 4v6h-6" /><path d="M1 20v-6h6" /><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
   {/if}

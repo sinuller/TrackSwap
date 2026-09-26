@@ -146,8 +146,8 @@
     border: 1px solid var(--line);
   }
   .result.sig {
-    border-color: rgba(74, 222, 128, 0.5);
-    background: rgba(74, 222, 128, 0.06);
+    border-color: var(--good);
+    background: var(--good-soft);
   }
   .big {
     font-size: 28px;

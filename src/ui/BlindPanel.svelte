@@ -144,7 +144,7 @@
     height: 22px;
     border-radius: 6px;
     background: var(--c);
-    color: #0b0d10;
+    color: var(--on-accent);
     font-weight: 800;
     font-size: 12px;
     flex: none;

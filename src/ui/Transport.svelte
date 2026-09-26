@@ -116,8 +116,8 @@
   }
   .loopbtn.on {
     color: var(--good);
-    border-color: rgba(74, 222, 128, 0.4);
-    background: rgba(74, 222, 128, 0.08);
+    border-color: var(--good);
+    background: var(--good-soft);
   }
   .ghost {
     background: transparent;

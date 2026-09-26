@@ -7,12 +7,12 @@
   import { INFERNO } from '../lib/colormap';
   import { fmtTime } from '../lib/format';
   import { i18n, t } from '../lib/i18n.svelte';
+  import { canvasPalette, theme, type CanvasPalette } from '../lib/theme.svelte';
 
   let { kind }: { kind: 'wave' | 'spectrogram' } = $props();
 
-  const COLORS: Record<Slot, string> = { A: '#ffb020', B: '#38c8f4' };
-  const NEUTRAL = '#9aa3b5';
   const RULER = 20;
+  const laneColor = (p: CanvasPalette, lane: { slot: Slot; neutral: boolean }) => (lane.neutral ? p.neutral : lane.slot === 'A' ? p.a : p.b);
 
   let canvas: HTMLCanvasElement;
   let width = $state(0);
@@ -63,14 +63,15 @@
     layer.width = W;
     layer.height = H;
     const g = layer.getContext('2d')!;
-    g.fillStyle = '#0f1216';
+    const p = canvasPalette();
+    g.fillStyle = p.bg;
     g.fillRect(0, 0, W, H);
     const ruler = RULER * dpr;
     const areaH = H - ruler;
     const dur = app.duration;
 
     if (!lanes.length || !(dur > 0)) {
-      g.fillStyle = '#5a6373';
+      g.fillStyle = p.faint;
       g.font = `${13 * dpr}px system-ui, sans-serif`;
       g.textAlign = 'center';
       g.textBaseline = 'middle';
@@ -86,20 +87,20 @@
     lanes.forEach((lane, i) => {
       const y0 = Math.round(i * laneH);
       const h = Math.round((i + 1) * laneH) - y0;
-      if (kind === 'wave') drawWave(g, lane, y0, h, W, dur);
-      else drawSpec(g, lane, y0, h, W, dur, maxNyq);
+      if (kind === 'wave') drawWave(g, p, lane, y0, h, W, dur);
+      else drawSpec(g, p, lane, y0, h, W, dur, maxNyq);
       if (i > 0) {
-        g.fillStyle = '#262c36';
+        g.fillStyle = p.line;
         g.fillRect(0, y0, W, Math.max(1, dpr));
       }
       if (!lane.neutral) {
         // Lane label
         const s = 18 * dpr;
-        g.fillStyle = COLORS[lane.slot];
+        g.fillStyle = laneColor(p, lane);
         g.beginPath();
         g.roundRect(6 * dpr, y0 + 6 * dpr, s, s, 4 * dpr);
         g.fill();
-        g.fillStyle = '#0b0d10';
+        g.fillStyle = p.onAccent;
         g.font = `800 ${11 * dpr}px system-ui, sans-serif`;
         g.textAlign = 'center';
         g.textBaseline = 'middle';
@@ -108,9 +109,9 @@
     });
 
     // Time ruler
-    g.fillStyle = '#14171c';
+    g.fillStyle = p.ruler;
     g.fillRect(0, areaH, W, ruler);
-    g.fillStyle = '#262c36';
+    g.fillStyle = p.line;
     g.fillRect(0, areaH, W, Math.max(1, dpr));
     const step = timeStep(dur, W / dpr);
     g.font = `${10 * dpr}px ui-monospace, monospace`;
@@ -118,23 +119,23 @@
     g.textAlign = 'left';
     for (let t = 0; t <= dur; t += step) {
       const x = Math.round((t / dur) * W);
-      g.fillStyle = '#323a47';
+      g.fillStyle = p.tick;
       g.fillRect(x, areaH, Math.max(1, dpr), 5 * dpr);
-      g.fillStyle = '#8690a2';
+      g.fillStyle = p.text;
       if (x < W - 30 * dpr) g.fillText(fmtTime(t), x + 4 * dpr, areaH + ruler / 2 + dpr);
     }
   }
 
-  function drawWave(g: CanvasRenderingContext2D, lane: Lane, y0: number, h: number, W: number, dur: number): void {
+  function drawWave(g: CanvasRenderingContext2D, p: CanvasPalette, lane: Lane, y0: number, h: number, W: number, dur: number): void {
     const tr = app.tracks[lane.slot];
     const peaks = tr.analysis?.peaks;
-    const color = lane.neutral ? NEUTRAL : COLORS[lane.slot];
+    const color = laneColor(p, lane);
     const mid = y0 + h / 2;
     const amp = (h / 2) * 0.9;
-    g.fillStyle = '#1a1e25';
+    g.fillStyle = p.grid;
     g.fillRect(0, Math.round(mid), W, Math.max(1, dpr));
     if (!peaks) {
-      g.fillStyle = '#5a6373';
+      g.fillStyle = p.faint;
       g.font = `${12 * dpr}px system-ui, sans-serif`;
       g.textAlign = 'center';
       g.textBaseline = 'middle';
@@ -173,11 +174,11 @@
     g.globalAlpha = 1;
   }
 
-  function drawSpec(g: CanvasRenderingContext2D, lane: Lane, y0: number, h: number, W: number, dur: number, maxNyq: number): void {
+  function drawSpec(g: CanvasRenderingContext2D, p: CanvasPalette, lane: Lane, y0: number, h: number, W: number, dur: number, maxNyq: number): void {
     const tr = app.tracks[lane.slot];
     const spec = tr.analysis?.spectrogram;
     if (!spec) {
-      g.fillStyle = '#5a6373';
+      g.fillStyle = p.faint;
       g.font = `${12 * dpr}px system-ui, sans-serif`;
       g.textAlign = 'center';
       g.textBaseline = 'middle';
@@ -193,9 +194,9 @@
       g.beginPath();
       g.rect(0, y0, W, h - imgH);
       g.clip();
-      g.fillStyle = '#0b0d10';
+      g.fillStyle = p.hatchBg;
       g.fillRect(0, y0, W, h - imgH);
-      g.strokeStyle = '#1a1e25';
+      g.strokeStyle = p.hatch;
       g.lineWidth = dpr;
       for (let x = -h; x < W; x += 10 * dpr) {
         g.beginPath();
@@ -230,7 +231,7 @@
       g.drawImage(specImage(spec), sx, 0, sw, spec.bins, dx, top, dw, imgH);
     }
 
-    // Frequency axis
+    // Frequency axis (labels on a small dark pill – readable over the spectrogram and the hatch)
     const stepHz = maxNyq > 30000 ? 10000 : 5000;
     g.font = `${10 * dpr}px ui-monospace, monospace`;
     g.textBaseline = 'middle';
@@ -240,15 +241,19 @@
       if (y < y0 + 10 * dpr) continue;
       g.fillStyle = 'rgba(255,255,255,0.08)';
       g.fillRect(0, Math.round(y), W, Math.max(1, dpr * 0.5));
-      g.fillStyle = 'rgba(232,235,241,0.7)';
-      g.fillText(`${f / 1000}k`, W - 6 * dpr, y);
+      const label = `${f / 1000}k`;
+      const tw = g.measureText(label).width;
+      g.fillStyle = 'rgba(11,13,16,0.55)';
+      g.fillRect(W - tw - 10 * dpr, y - 7 * dpr, tw + 7 * dpr, 14 * dpr);
+      g.fillStyle = 'rgba(232,235,241,0.85)';
+      g.fillText(label, W - 6 * dpr, y);
     }
 
     // Estimated cutoff
     const cut = tr.analysis?.cutoff;
     if (cut && cut.cutoffHz > 0 && cut.cutoffHz < nyq * 0.985) {
       const y = Math.round(y0 + h - (cut.cutoffHz / maxNyq) * h);
-      const color = lane.neutral ? NEUTRAL : COLORS[lane.slot];
+      const color = laneColor(p, lane);
       g.strokeStyle = color;
       g.lineWidth = 1.5 * dpr;
       g.setLineDash([6 * dpr, 4 * dpr]);
@@ -338,7 +343,7 @@
 
   $effect(() => {
     // Dependencies of the static layer
-    void [width, height, lanes, app.duration, app.offsetB, kind, i18n.lang];
+    void [width, height, lanes, app.duration, app.offsetB, kind, i18n.lang, theme.resolved];
     for (const s of SLOTS) void [app.tracks[s].analysis, app.tracks[s].duration];
     if (!canvas || !width || !height) return;
     dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -354,6 +359,7 @@
       if (!W || !H || layer.width !== W) return;
       g.clearRect(0, 0, W, H);
       g.drawImage(layer, 0, 0);
+      const p = canvasPalette();
       const dur = app.duration;
       if (!(dur > 0) || !lanes.length) return;
       const areaH = H - RULER * dpr;
@@ -363,7 +369,7 @@
       if (lanes.length > 1) {
         lanes.forEach((lane, i) => {
           if (lane.slot !== app.active) {
-            g.fillStyle = 'rgba(11,13,16,0.5)';
+            g.fillStyle = p.dim;
             g.fillRect(0, i * laneH, W, laneH);
           }
         });
@@ -375,9 +381,9 @@
         const x0 = (loop.start / dur) * W;
         const x1 = (loop.end / dur) * W;
         const on = app.loopEnabled;
-        g.fillStyle = on ? 'rgba(74,222,128,0.10)' : 'rgba(255,255,255,0.05)';
+        g.fillStyle = on ? p.loopFill : p.loopFillOff;
         g.fillRect(x0, 0, x1 - x0, areaH);
-        g.fillStyle = on ? '#4ade80' : '#8690a2';
+        g.fillStyle = on ? p.good : p.muted;
         g.fillRect(x0 - dpr, 0, 2 * dpr, areaH);
         g.fillRect(x1 - dpr, 0, 2 * dpr, areaH);
         const hw = 7 * dpr;
@@ -394,15 +400,15 @@
       // Hover
       if (hoverX !== null && !drag) {
         const x = hoverX * dpr;
-        g.fillStyle = 'rgba(255,255,255,0.25)';
+        g.fillStyle = p.hover;
         g.fillRect(x, 0, Math.max(1, dpr), areaH);
         const label = fmtTime((hoverX / width) * dur, true);
         g.font = `${10 * dpr}px ui-monospace, monospace`;
         const tw = g.measureText(label).width + 10 * dpr;
         const lx = Math.min(W - tw - 2 * dpr, x + 6 * dpr);
-        g.fillStyle = 'rgba(11,13,16,0.85)';
+        g.fillStyle = p.tipBg;
         g.fillRect(lx, areaH - 20 * dpr, tw, 16 * dpr);
-        g.fillStyle = '#e8ebf1';
+        g.fillStyle = p.tipFg;
         g.textAlign = 'left';
         g.textBaseline = 'middle';
         g.fillText(label, lx + 5 * dpr, areaH - 12 * dpr);
@@ -410,7 +416,7 @@
 
       // Playhead
       const px = Math.round((app.position / dur) * W);
-      g.fillStyle = '#ffffff';
+      g.fillStyle = p.playhead;
       g.fillRect(px - dpr * 0.75, 0, 1.5 * dpr, H);
       g.beginPath();
       g.moveTo(px - 5 * dpr, H);
@@ -442,7 +448,7 @@
     height: 230px;
     border-radius: var(--radius-sm);
     overflow: hidden;
-    background: #0f1216;
+    background: var(--canvas);
   }
   .timeline.spectrogram {
     height: 340px;

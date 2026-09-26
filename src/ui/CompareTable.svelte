@@ -263,7 +263,7 @@
     border-radius: 5px;
     font-size: 11px;
     font-weight: 800;
-    color: #0b0d10;
+    color: var(--on-accent);
     vertical-align: -1px;
     font-family: var(--font);
   }
@@ -310,7 +310,7 @@
     color: var(--warn);
   }
   .hints .bad {
-    background: rgba(248, 113, 113, 0.08);
+    background: var(--bad-soft);
   }
   .hints .bad :global(svg) {
     color: var(--bad);

@@ -20,9 +20,48 @@
   --x: #b48cff;
   --x-soft: rgba(180, 140, 255, 0.14);
 
+  --x-glow: rgba(180, 140, 255, 0.35);
+
   --good: #4ade80;
+  --good-soft: rgba(74, 222, 128, 0.12);
   --warn: #fbbf24;
+  --warn-soft: rgba(251, 191, 36, 0.1);
   --bad: #f87171;
+  --bad-soft: rgba(248, 113, 113, 0.08);
+
+  --switch-knob: #b4bccb;
+  /* Text on the A/B/X accent colours */
+  --on-accent: #0b0d10;
+  /* Inverted primary buttons (play) */
+  --primary-hover: #ffffff;
+  --primary-glow: rgba(255, 255, 255, 0.35);
+  --glass: rgba(255, 255, 255, 0.06);
+  --glass-strong: rgba(255, 255, 255, 0.2);
+  --highlight: rgba(255, 255, 255, 0.04);
+  --overlay: rgba(11, 13, 16, 0.8);
+  --backdrop: rgba(0, 0, 0, 0.55);
+  --bar-bg: rgba(15, 18, 22, 0.92);
+  --shadow: rgba(0, 0, 0, 0.7);
+
+  /* Canvas views (waveform, spectrum) */
+  --canvas: #0f1216;
+  --canvas-ruler: #14171c;
+  --canvas-line: #262c36;
+  --canvas-grid: #1a1e25;
+  --canvas-grid-strong: #232833;
+  --canvas-tick: #323a47;
+  --canvas-text: #8690a2;
+  --canvas-faint: #5a6373;
+  --canvas-dim: rgba(11, 13, 16, 0.5);
+  --canvas-hover: rgba(255, 255, 255, 0.25);
+  --canvas-tip-bg: rgba(11, 13, 16, 0.85);
+  --canvas-tip-fg: #e8ebf1;
+  --canvas-hatch-bg: #0b0d10;
+  --canvas-hatch: #1a1e25;
+  --playhead: #ffffff;
+  --loop-fill: rgba(74, 222, 128, 0.1);
+  --loop-fill-off: rgba(255, 255, 255, 0.05);
+  --neutral-wave: #9aa3b5;
 
   --radius: 12px;
   --radius-sm: 8px;
@@ -30,6 +69,70 @@
   --mono: ui-monospace, 'SF Mono', 'JetBrains Mono', 'Cascadia Mono', Consolas, monospace;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   color-scheme: dark;
+}
+
+/* Light theme – set via data-theme (public/theme-init.js, lib/theme.svelte.ts) */
+:root[data-theme='light'] {
+  --bg: #f3f4f7;
+  --bg-2: #eceef2;
+  --panel: #ffffff;
+  --panel-2: #f4f5f8;
+  --panel-3: #e8eaef;
+  --line: #e0e3e9;
+  --line-2: #cdd2db;
+  --text: #14171c;
+  --text-2: #3b4250;
+  --muted: #5f6878;
+  --faint: #8a92a1;
+
+  --a: #e08a00;
+  --a-soft: rgba(224, 138, 0, 0.12);
+  --a-glow: rgba(224, 138, 0, 0.3);
+  --b: #0a98cc;
+  --b-soft: rgba(10, 152, 204, 0.11);
+  --b-glow: rgba(10, 152, 204, 0.3);
+  --x: #7c4dff;
+  --x-soft: rgba(124, 77, 255, 0.1);
+  --x-glow: rgba(124, 77, 255, 0.28);
+
+  --good: #16a34a;
+  --good-soft: rgba(22, 163, 74, 0.1);
+  --warn: #c77700;
+  --warn-soft: rgba(217, 119, 6, 0.1);
+  --bad: #dc2626;
+  --bad-soft: rgba(220, 38, 38, 0.07);
+
+  --switch-knob: #ffffff;
+  --primary-hover: #000000;
+  --primary-glow: rgba(20, 23, 28, 0.3);
+  --glass: rgba(20, 23, 28, 0.04);
+  --glass-strong: rgba(20, 23, 28, 0.15);
+  --highlight: rgba(255, 255, 255, 0.6);
+  --overlay: rgba(243, 244, 247, 0.85);
+  --backdrop: rgba(20, 23, 28, 0.35);
+  --bar-bg: rgba(255, 255, 255, 0.92);
+  --shadow: rgba(20, 23, 28, 0.18);
+
+  --canvas: #f8f9fb;
+  --canvas-ruler: #eef0f4;
+  --canvas-line: #dfe2e8;
+  --canvas-grid: #e9ecf1;
+  --canvas-grid-strong: #d9dde5;
+  --canvas-tick: #c3c9d3;
+  --canvas-text: #5f6878;
+  --canvas-faint: #8a92a1;
+  --canvas-dim: rgba(248, 249, 251, 0.62);
+  --canvas-hover: rgba(20, 23, 28, 0.3);
+  --canvas-tip-bg: rgba(20, 23, 28, 0.88);
+  --canvas-tip-fg: #ffffff;
+  --canvas-hatch-bg: #eef0f4;
+  --canvas-hatch: #dde1e8;
+  --playhead: #14171c;
+  --loop-fill: rgba(22, 163, 74, 0.1);
+  --loop-fill-off: rgba(20, 23, 28, 0.05);
+  --neutral-wave: #7a8394;
+
+  color-scheme: light;
 }
 
 *,
@@ -128,7 +231,7 @@ button:disabled {
 }
 
 .btn.primary:hover:not(:disabled) {
-  background: #fff;
+  background: var(--primary-hover);
   color: var(--bg);
 }
 
@@ -210,7 +313,7 @@ input[type='range']::-moz-range-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: var(--text-2);
+  background: var(--switch-knob);
   transition: transform 0.15s, background 0.15s;
 }
 
@@ -220,7 +323,7 @@ input[type='range']::-moz-range-thumb {
 
 .switch.on::after {
   transform: translateX(14px);
-  background: #0b0d10;
+  background: #ffffff;
 }
 
 ::-webkit-scrollbar {
