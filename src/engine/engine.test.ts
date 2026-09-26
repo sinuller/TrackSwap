@@ -7,6 +7,7 @@ import { OfflineAudioContext } from 'node-web-audio-api';
 import { AudioEngine } from './AudioEngine';
 
 const RATE = 48000;
+const onLinux = (globalThis as { process?: { platform?: string } }).process?.platform === 'linux';
 /** Engine start lookahead (see AudioEngine) */
 const START = 0.02;
 
@@ -134,7 +135,7 @@ describe('AudioEngine (offline render)', () => {
 
   // node-web-audio-api on Linux does not process source nodes that are created while an
   // OfflineAudioContext is suspended, so this scenario can only be rendered on Windows/macOS.
-  it.skipIf(process.platform === 'linux')('re-schedules seamlessly when the loop changes during playback', async () => {
+  it.skipIf(onLinux)('re-schedules seamlessly when the loop changes during playback', async () => {
     const ctx = makeContext(1.5);
     const engine = new AudioEngine(ctx);
     const wave = sineAt(523, 0.6);
