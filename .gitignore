@@ -1,0 +1,9 @@
+node_modules/
+dist/
+dev-dist/
+test-audio/
+*.log
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.claude/
