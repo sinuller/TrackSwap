@@ -139,7 +139,9 @@ describe('AudioEngine (offline render)', () => {
     engine.setBuffer('A', bufferFrom(ctx, signal(wave, 3)));
     await engine.play();
     const offline = ctx as unknown as Offline;
+    let suspendedAt = -1;
     void offline.suspend(0.5).then(() => {
+      suspendedAt = ctx.currentTime;
       // Region ahead of the playhead: playback must continue without any jump
       engine.setLoop({ start: 1.2, end: 1.4 });
       engine.setLoopEnabled(true);
@@ -147,9 +149,16 @@ describe('AudioEngine (offline render)', () => {
     });
     const out = await render(ctx);
     let maxErr = 0;
+    let worst = 0;
     // compare up to the first loop wrap (timeline 1.4 s)
-    for (let i = Math.round(0.1 * RATE); i < Math.round(1.4 * RATE); i++) maxErr = Math.max(maxErr, Math.abs(out[i] - wave(i / RATE - START)));
-    expect(maxErr).toBeLessThan(1e-3);
+    for (let i = Math.round(0.1 * RATE); i < Math.round(1.4 * RATE); i++) {
+      const e = Math.abs(out[i] - wave(i / RATE - START));
+      if (e > maxErr) {
+        maxErr = e;
+        worst = i;
+      }
+    }
+    expect(maxErr, `worst at ${(worst / RATE).toFixed(5)} s (suspended at ${suspendedAt})`).toBeLessThan(1e-3);
   });
 
   it('applies level matching as an exact gain', async () => {
