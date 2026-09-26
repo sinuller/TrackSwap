@@ -1,6 +1,18 @@
+<div align="center">
+
 # TrackSwap – A/B Audio Compare
 
-**[▶ Open TrackSwap](https://sinuller.github.io/TrackSwap/)** · [Deutsch](#deutsch)
+**Compare two audio files seamlessly – right in your browser.**
+
+<a href="https://sinuller.github.io/TrackSwap/"><img src="https://img.shields.io/badge/%E2%96%B6%20Open%20TrackSwap-use%20it%20now%20in%20your%20browser-ffb020?style=for-the-badge&labelColor=14171c" alt="Open TrackSwap – use it now in your browser" height="42"></a>
+
+**Ready to use – no installation, no sign-up, no upload.**<br>
+Just open **[sinuller.github.io/TrackSwap](https://sinuller.github.io/TrackSwap/)**, drop two audio files and start comparing.<br>
+Works on desktop and mobile · [Deutsch](#deutsch)
+
+</div>
+
+---
 
 TrackSwap plays two audio files **sample-accurately in sync** and switches between them
 **instantly and seamlessly** – same position, no dropout, no click. Built for producers,
@@ -29,7 +41,7 @@ Everything runs **locally in your browser**. Your files are never uploaded.
   AIFF decoder, and an optional on-demand **ffmpeg.wasm** fallback (ALAC, WMA, APE, WavPack, DSD …)
 - **Mobile** – large touch controls, Media Session (lock screen, headphone buttons: *next track*
   switches the source), AirPlay, installable as a PWA and usable offline
-- **German & English UI** (detected automatically, switchable in the settings)
+- **German & English UI** and **light / dark mode** (both follow the device, switchable in the settings)
 
 ## Keyboard shortcuts
 
@@ -53,6 +65,10 @@ Everything runs **locally in your browser**. Your files are never uploaded.
   TrackSwap re-initialises the audio on the next play to avoid pitch errors in Safari.
 
 ## Development
+
+> **You don't need any of this to use TrackSwap** – the app is already hosted at
+> **[sinuller.github.io/TrackSwap](https://sinuller.github.io/TrackSwap/)**.
+> This section is only for people who want to modify the code.
 
 Requires Node.js 22+.
 
@@ -88,6 +104,15 @@ See [SECURITY.md](SECURITY.md) for the security model.
 
 ## Deutsch
 
+<div align="center">
+
+<a href="https://sinuller.github.io/TrackSwap/"><img src="https://img.shields.io/badge/%E2%96%B6%20TrackSwap%20%C3%B6ffnen-direkt%20im%20Browser%20nutzen-ffb020?style=for-the-badge&labelColor=14171c" alt="TrackSwap öffnen – direkt im Browser nutzen" height="42"></a>
+
+**Sofort nutzbar – keine Installation, keine Anmeldung, kein Upload.**<br>
+Einfach **[sinuller.github.io/TrackSwap](https://sinuller.github.io/TrackSwap/)** öffnen, zwei Audiodateien hineinziehen und vergleichen.
+
+</div>
+
 **TrackSwap** spielt zwei Audiodateien **sample-genau synchron** ab und schaltet
 **sofort und nahtlos** zwischen ihnen um – an derselben Position, ohne Aussetzer und ohne Knacken.
 Gedacht für Produzenten, Mix-/Mastering-Engineers und Audiophile, die Mixe, Master oder Formate
@@ -103,4 +128,6 @@ Alles läuft **lokal im Browser** – die Dateien werden nirgends hochgeladen.
   Tags, Cover und Songtexte
 - **Waveform, Spektrogramm und Frequenzanalyse** synchron zum Playhead
 - **Knackfreie Loops**, Tastenkürzel, Handy-Bedienung, Media Session, AirPlay, Offline-Nutzung (PWA)
-- **Deutsch/Englisch**, automatisch erkannt und in den Einstellungen umschaltbar
+- **Deutsch/Englisch** sowie **Hell-/Dunkelmodus**, beides automatisch nach Gerät und in den Einstellungen umschaltbar
+
+Der Abschnitt „Development“ oben ist nur für Leute gedacht, die den Code verändern möchten – zum Benutzen reicht der Link.
