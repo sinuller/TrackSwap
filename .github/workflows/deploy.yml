@@ -10,6 +10,21 @@ permissions:
   contents: read
 
 jobs:
+  # Full test suite incl. the offline-rendered audio engine tests that need
+  # a reliable OfflineAudioContext.suspend() (see src/engine/engine.test.ts).
+  test-engine:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+      - run: npm test
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -33,7 +48,7 @@ jobs:
 
   deploy:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    needs: build
+    needs: [build, test-engine]
     runs-on: ubuntu-latest
     permissions:
       pages: write

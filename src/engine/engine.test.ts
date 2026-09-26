@@ -7,6 +7,8 @@ import { OfflineAudioContext } from 'node-web-audio-api';
 import { AudioEngine } from './AudioEngine';
 
 const RATE = 48000;
+// Tests that change the graph while an OfflineAudioContext is suspended are unreliable with
+// node-web-audio-api on Linux; CI runs them on a Windows runner instead (see deploy.yml).
 const onLinux = (globalThis as { process?: { platform?: string } }).process?.platform === 'linux';
 /** Engine start lookahead (see AudioEngine) */
 const START = 0.02;
@@ -42,7 +44,7 @@ async function render(ctx: AudioContext): Promise<Float32Array> {
 }
 
 describe('AudioEngine (offline render)', () => {
-  it('keeps A and B sample-aligned: switching between identical content is seamless (incl. offset correction)', async () => {
+  it.skipIf(onLinux)('keeps A and B sample-aligned: switching between identical content is seamless (incl. offset correction)', async () => {
     const ctx = makeContext(2.5);
     const engine = new AudioEngine(ctx);
     const wave = sineAt(440, 0.5);
@@ -101,7 +103,7 @@ describe('AudioEngine (offline render)', () => {
     expect(maxErr).toBeLessThan(1e-3);
   });
 
-  it('crossfades over the full crossfade time even long after the previous switch', async () => {
+  it.skipIf(onLinux)('crossfades over the full crossfade time even long after the previous switch', async () => {
     const ctx = makeContext(1.6);
     const engine = new AudioEngine(ctx);
     engine.crossfade = 0.008;
@@ -133,8 +135,6 @@ describe('AudioEngine (offline render)', () => {
     expect(gainAt(1.3)).toBeCloseTo(0, 2);
   });
 
-  // node-web-audio-api on Linux does not process source nodes that are created while an
-  // OfflineAudioContext is suspended, so this scenario can only be rendered on Windows/macOS.
   it.skipIf(onLinux)('re-schedules seamlessly when the loop changes during playback', async () => {
     const ctx = makeContext(1.5);
     const engine = new AudioEngine(ctx);
