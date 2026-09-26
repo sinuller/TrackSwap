@@ -107,18 +107,15 @@ describe('AudioEngine (offline render)', () => {
     const wave = sineAt(200, 0.5);
     engine.setBuffer('A', bufferFrom(ctx, signal(wave, 2)));
     engine.setBuffer('B', bufferFrom(ctx, new Float32Array(2 * RATE))); // silence
+    engine.setActive('A'); // first switch at t = 0
     await engine.play();
     const offline = ctx as unknown as Offline;
-    void offline.suspend(0.3).then(() => {
-      engine.setActive('B');
-      void offline.resumeRendering();
-    });
     void offline.suspend(1.2).then(() => {
-      engine.setActive('A'); // 0.9 s after the last switch
+      engine.setActive('B'); // second switch 1.2 s later
       void offline.resumeRendering();
     });
     const out = await render(ctx);
-    // Gain of A over time = output / reference (where the reference is not near zero)
+    // Gain of A over time = projection of the output onto the reference signal
     const gainAt = (t: number) => {
       let num = 0, den = 0;
       for (let i = Math.round((t - 0.0005) * RATE); i < Math.round((t + 0.0005) * RATE); i++) {
@@ -128,10 +125,11 @@ describe('AudioEngine (offline render)', () => {
       }
       return num / den;
     };
-    expect(gainAt(1.0)).toBeCloseTo(0, 2); // B (silence) is active
-    expect(gainAt(1.2 + 0.004)).toBeGreaterThan(0.3); // halfway through the 8 ms fade
-    expect(gainAt(1.2 + 0.004)).toBeLessThan(0.7);
-    expect(gainAt(1.3)).toBeCloseTo(1, 2);
+    expect(gainAt(1.0)).toBeCloseTo(1, 2);
+    const mid = gainAt(1.2 + 0.004); // halfway through the 8 ms crossfade
+    expect(mid).toBeGreaterThan(0.3);
+    expect(mid).toBeLessThan(0.7);
+    expect(gainAt(1.3)).toBeCloseTo(0, 2);
   });
 
   it('re-schedules seamlessly when the loop changes during playback', async () => {
